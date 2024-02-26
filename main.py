@@ -2,11 +2,48 @@ import pandas as pd
 from argparse import ArgumentParser
 import json
 
+def get_all_values(df: pd.DataFrame, fields: tuple):
+    ls = []
+    for i, row in df[list(fields)].iterrows():
+        ls.append(tuple(row))
+    return tuple(ls)
+        
 def get_first_values(df: pd.DataFrame, fields: tuple):
     values = []
     for field in fields:
         values.append(df[field].values[0])
     return tuple(values)
+
+def process_outbound_transaction(df: pd.DataFrame, category_map: dict):
+    field_names = (
+        "Source fee amount",
+        "Source amount (after fees)",
+        "Source currency",
+        "Target amount (after fees)",
+        "Target currency"
+    )
+
+    rows = get_all_values(df,field_names)
+
+    expense_category = "Expenses:Unassigned"
+    source = df["Target name"].values[0]
+    if source in category_map:
+        expense_category = category_map[source]
+
+    lines = []
+    for row in rows:
+        source_fee, source_amount, source_currency, target_amount, target_currency = row
+        lines.extend([
+            f"\tAssets:Wise {-source_amount} {source_currency} @@ {target_amount} {target_currency}",
+            f"\t{expense_category} {target_amount} {target_currency}",
+        ])
+        # currency transfer fees
+        if source_currency != target_currency:
+            lines.extend([
+                f"\tAssets:Wise {-source_fee} {source_currency}",
+                f"\tExpenses:Bank-Fees {source_fee} {source_currency}",
+        ])
+    return lines
 
 def process_neutral_transaction(df: pd.DataFrame, category_map: dict):
     # neutral transfers (balance transfers) are always one line
@@ -60,9 +97,10 @@ def process_transaction(df: pd.DataFrame, category_map: dict):
         lines = process_inbound_transaction(df, category_map)
     elif direction == "NEUTRAL":
         lines = process_neutral_transaction(df, category_map)
+    elif direction == "OUT":
+        lines = process_outbound_transaction(df, category_map)
 
     transaction_str = "\n".join([bean_head] + lines)
-    print(transaction_str)
     return transaction_str
     
 def process(input: str, output: str, category_map: str):
@@ -74,8 +112,10 @@ def process(input: str, output: str, category_map: str):
         map = {}
     
     grouped = df.groupby("ID")
-    for name, group in grouped:
-        bean_count = process_transaction(group, map)
+
+    out = [ process_transaction(group, map) for name, group in grouped ]
+
+    print('\n\n'.join(out))    
 
 def main():
     parser = ArgumentParser()
