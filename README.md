@@ -2,7 +2,7 @@
 
 # Seneca
 
-*An script to import from Wise (formerly Transferwise) CSVs to [beancount](https://github.com/beancount/beancount) format. Named after Seneca the Younger, a stoic philosopher who became wealthy by pioneering commodities trading and finance. I.e. a Wise Beancounter.*
+*A script to import from Wise (formerly Transferwise) CSVs to [beancount](https://github.com/beancount/beancount) format. Named after Seneca the Younger, a stoic philosopher who became wealthy by pioneering commodities trading and finance. I.e. a Wise Beancounter.*
 
 The script can successfully log multi-legged outbound transactions including currency transfers. I use it for my own small business accounting needs.
 
