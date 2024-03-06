@@ -31,10 +31,6 @@ Note that the script prints to `stdout`. This is by design so that you can use `
 
 The Wise transactions CSV file to import from. E.g. `input/business-wise.csv`
 
-### `--output`
-
-The beancount file to export to. E.g. `output/business.beancount`
-
 ### `--map`
 
 A JSON file. This lets you automatically set the category of both inbound and outbound transactions to this account, which is very helpful when processing a large number of transactions. It uses the `target_name` and `source_name` columns from the Wise CSV as the key and your desired category as the key. For example:
