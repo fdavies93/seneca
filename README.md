@@ -20,7 +20,7 @@ Git clone this repo and navigate to the folder.
 python3 -m venv venv
 . ./venv/bin/activate
 pip install -r requirements.txt 
-python seneca.py --input wise_transactions.csv --output wise_beans.beancount --map categories.json
+python seneca.py --input wise_transactions.csv --map categories.json
 ```
 
 ## Options
