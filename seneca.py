@@ -103,7 +103,7 @@ def process_transaction(df: pd.DataFrame, category_map: dict):
     transaction_str = "\n".join([bean_head] + lines)
     return transaction_str
     
-def process(input: str, output: str, category_map: str):
+def process(input: str, category_map: str):
     df = pd.read_csv(input)
     try:
         with open(category_map) as f:
@@ -120,11 +120,10 @@ def process(input: str, output: str, category_map: str):
 def main():
     parser = ArgumentParser()
     parser.add_argument("--input", "-i", required=True)
-    parser.add_argument("--output", "-o", required=True)
     parser.add_argument("--map")
     parsed = parser.parse_args()
 
-    args = [vars(parsed)[k] for k in ("input","output","map")]
+    args = [vars(parsed)[k] for k in ("input","map")]
     process(*args)
     
 if __name__ == "__main__":
