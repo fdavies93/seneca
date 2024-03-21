@@ -103,27 +103,32 @@ def process_transaction(df: pd.DataFrame, category_map: dict):
     transaction_str = "\n".join([bean_head] + lines)
     return transaction_str
     
-def process(input: str, category_map: str):
+def process(input: str, category_map: str, sort: str):
     df = pd.read_csv(input)
     try:
         with open(category_map) as f:
             map = json.load(f)
     except:
         map = {}
+
+    desc = False
+    if sort == "desc":
+        desc = True
     
     grouped = df.groupby("ID")
-
     out = [ process_transaction(group, map) for name, group in grouped ]
+    out.sort(key = lambda in_str: in_str[:10], reverse=desc)
 
-    print('\n\n'.join(out))    
+    print('\n\n'.join(out)) 
 
 def main():
     parser = ArgumentParser()
     parser.add_argument("--input", "-i", required=True)
     parser.add_argument("--map")
+    parser.add_argument("--sort", "-s")
     parsed = parser.parse_args()
 
-    args = [vars(parsed)[k] for k in ("input","map")]
+    args = [vars(parsed)[k] for k in ("input","map","sort")]
     process(*args)
     
 if __name__ == "__main__":

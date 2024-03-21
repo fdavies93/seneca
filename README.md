@@ -43,3 +43,11 @@ A JSON file. This lets you automatically set the category of both inbound and ou
 ```
 
 If there's no category found then the script will allocate `Income:Unassigned` or `Expenses:Unassigned` to your transactions.
+
+### `--sort`
+
+A switch to decide the order in which transactions are sorted, by date. If the value is `desc`, outputs in descending order (most recent date first). For all other values, and by default, outputs in ascending order by date.
+
+```text
+python seneca.py -i input/transactions.csv --sort desc
+```
